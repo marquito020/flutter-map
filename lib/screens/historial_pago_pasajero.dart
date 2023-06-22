@@ -144,7 +144,7 @@ class _HistorialPagosPageState extends State<HistorialPagosPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Cantidad de personas: ${listaRelacionada[index]['cant_pasajeros']}",
+                      "Costo total: ${listaRelacionada[index]['pago']['costo_total']}",
                       style: const TextStyle(fontSize: 14),
                     ),
                     /* const SizedBox(height: 8),
