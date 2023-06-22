@@ -1,8 +1,17 @@
-import 'package:app_movil/screens/home.dart';
+import 'package:app_movil/screens/guardar_ruta.dart';
+import 'package:app_movil/screens/historial_viajes_conductor.dart';
+import 'package:app_movil/screens/historial_viajes_pasajero.dart';
+import 'package:app_movil/screens/inicio_conductor.dart';
+import 'package:app_movil/screens/metodo_pago.dart';
+import 'package:app_movil/screens/preferencias.dart';
+import 'package:app_movil/screens/register.dart';
+import 'package:app_movil/screens/register_brevet.dart';
+import 'package:app_movil/screens/register_conductor.dart';
+import 'package:app_movil/screens/reservar_viaje_lista.dart';
+import 'package:app_movil/screens/solicitar_viaje.dart';
 import 'package:app_movil/screens/login.dart';
 import 'package:app_movil/screens/onboarding.dart';
-import 'package:app_movil/screens/request_permission.dart';
-import 'package:app_movil/screens/splash.dart';
+import 'package:app_movil/screens/reservar_viaje.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -14,22 +23,27 @@ class MyApp extends StatelessWidget {
         title: 'Universidad Taxi',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(fontFamily: 'Montserrat'),
-        initialRoute: '/home',
+        initialRoute: '/onboarding',
         routes: <String, WidgetBuilder>{
           '/onboarding': (BuildContext context) => const Onboarding(),
           '/login': (BuildContext context) => const Login(),
-          '/home': (BuildContext context) => const Home(),
-          /* '/splash': (BuildContext context) => const Splash(),
-          '/request_permission': (BuildContext context) =>
-              const RequestPermission(), */
-          /* '/home': (BuildContext context) => new Home(),
-          '/settings': (BuildContext context) => new Settings(),
-          "/onboarding": (BuildContext context) => new Onboarding(),
-          "/pro": (BuildContext context) => new Pro(),
-          "/profile": (BuildContext context) => new Profile(),
-          "/articles": (BuildContext context) => new Articles(),
-          "/components": (BuildContext context) => new Components(),
-          "/account": (BuildContext context) => new Register(), */
+          '/register': (BuildContext context) => const Register(),
+          '/solicitarViaje': (BuildContext context) =>
+              const SolicitarViajePage(),
+          '/metodoPago': (BuildContext context) => const MetodoPagoPage(),
+          '/historialViajesPasajero': (BuildContext context) =>
+              const HistorialViajesPasajeroPage(),
+          '/historialViajesConductor': (BuildContext context) =>
+              const HistorialViajesConductorPage(),
+          '/inicioConductor': (BuildContext context) =>
+              const InicioConductorPage(),
+          '/registerConductor': (BuildContext context) =>
+              RegisterConductorPage(),
+          '/preferencias': (BuildContext context) => PreferenciasPage(),
+          '/brevet': (BuildContext context) => const RegisterBrevetPage(),
+          '/guardarRuta': (BuildContext context) => const GuardarRutaPage(),
+          '/reservarViajeLista': (BuildContext context) =>
+              const ReservarViajeListaPage(),
         });
   }
 }

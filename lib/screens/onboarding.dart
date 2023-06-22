@@ -1,3 +1,4 @@
+import 'package:app_movil/constants/colors.dart';
 import 'package:flutter/material.dart';
 
 class Onboarding extends StatelessWidget {
@@ -36,7 +37,7 @@ class Onboarding extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
-                          color: Colors.blue,
+                          color: primary,
                         ),
                       ),
                     ),
@@ -51,12 +52,12 @@ class Onboarding extends StatelessWidget {
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          /* Navigator.pushReplacementNamed(context, '/login'); */
-                          Navigator.pushNamed(context, '/login');
+                          Navigator.pushReplacementNamed(context, '/login');
+                          /* Navigator.pushNamed(context, '/login'); */
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: Colors.black,
+                          backgroundColor: primary,
+                          foregroundColor: containerprimaryAccent,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -66,9 +67,12 @@ class Onboarding extends StatelessWidget {
                       ),
                       const SizedBox(height: 10),
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          /* Navigator.pushReplacementNamed(context, '/register'); */
+                          Navigator.pushNamed(context, '/register');
+                        },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
+                          backgroundColor: primary[100],
                           foregroundColor: Colors.black,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),

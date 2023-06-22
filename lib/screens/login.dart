@@ -1,4 +1,11 @@
+import 'package:app_movil/constants/colors.dart';
+import 'package:app_movil/controllers/authController.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../utils/api_backend.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -7,11 +14,15 @@ class Login extends StatefulWidget {
   State<Login> createState() => _LoginState();
 }
 
+/* Controller Login */
+var emailController = TextEditingController();
+var passwordController = TextEditingController();
+
 class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      /* appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
           leading: IconButton(
@@ -20,7 +31,7 @@ class _LoginState extends State<Login> {
             onPressed: () {
               Navigator.pop(context);
             },
-          )),
+          )), */
       body: Stack(
         children: [
           const Padding(
@@ -33,6 +44,7 @@ class _LoginState extends State<Login> {
                 style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
+                  color: primary,
                 ),
               ),
             ),
@@ -43,6 +55,7 @@ class _LoginState extends State<Login> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextFormField(
+                  controller: emailController,
                   decoration: const InputDecoration(
                     labelText: 'Correo electrónico',
                     labelStyle: TextStyle(
@@ -71,9 +84,10 @@ class _LoginState extends State<Login> {
                 const SizedBox(
                   height: 20,
                 ),
-                const TextField(
+                TextFormField(
+                  controller: passwordController,
                   obscureText: true,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Contraseña',
                     labelStyle: TextStyle(
                       fontSize: 14,
@@ -106,10 +120,14 @@ class _LoginState extends State<Login> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/splash');
+                      /* Navigator.pushReplacementNamed(
+                          context, '/solicitarViaje'); */
+                      login();
+                      /* AuthController()
+                          .login(emailController.text, passwordController.text); */
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
+                      backgroundColor: primary,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -121,7 +139,7 @@ class _LoginState extends State<Login> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: containerprimary,
                         ),
                       ),
                     ),
@@ -143,14 +161,14 @@ class _LoginState extends State<Login> {
                         ),
                         TextButton(
                           onPressed: () {
-                            /* Navigator.pushNamed(context, '/register'); */
+                            Navigator.pushNamed(context, '/register');
                           },
                           child: const Text(
                             'Regístrate',
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
-                              color: Colors.blue,
+                              color: primary,
                             ),
                           ),
                         ),
@@ -163,5 +181,57 @@ class _LoginState extends State<Login> {
         ],
       ),
     );
+  }
+
+  void login() async {
+    var email = emailController.text;
+    var password = passwordController.text;
+
+    if (email.isNotEmpty && password.isNotEmpty) {
+      var response = await http.post(
+        Uri.parse('$apiBackend/auth/login'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, dynamic>{
+          "correo": email,
+          "password": password,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(response.body);
+        print(response.statusCode);
+        if (jsonResponse['user'] != null) {
+          SharedPreferences user = await SharedPreferences.getInstance();
+          user.setString('token', jsonResponse['token']);
+          user.setString('correo', jsonResponse['user']['correo']);
+          user.setString('nombre', jsonResponse['user']['nombre']);
+          user.setString('nro_registro', jsonResponse['user']['nro_registro']);
+          user.setInt('id', jsonResponse['user']['id']);
+
+          print("Ingresado");
+          Navigator.pushReplacementNamed(context, '/solicitarViaje');
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Usuario o contraseña incorrectos'),
+            ),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Error al iniciar sesión'),
+          ),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Ingrese todos los campos'),
+        ),
+      );
+    }
   }
 }
