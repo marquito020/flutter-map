@@ -29,6 +29,8 @@ class _RegisterState extends State<Register> {
   bool google = false;
   bool isSexo = false;
 
+  int rol = 1;
+
   XFile? selectedImage;
 
   Future<void> _pickImage() async {
@@ -198,25 +200,6 @@ class _RegisterState extends State<Register> {
               const SizedBox(
                 height: 20,
               ),
-              TextFormField(
-                controller: passwordController,
-                obscureText: true,
-                decoration: const InputDecoration(
-                  labelText: 'Contraseña',
-                  labelStyle: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey,
-                  ),
-                  prefixIcon: Icon(
-                    Icons.lock_outline,
-                    color: Colors.grey,
-                  ),
-                  contentPadding: EdgeInsets.symmetric(vertical: 0),
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
               /* Sexo */
               ListTile(
                 contentPadding: EdgeInsets.zero,
@@ -256,6 +239,65 @@ class _RegisterState extends State<Register> {
                   },
                 ),
               ),
+              TextFormField(
+                controller: passwordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: 'Contraseña',
+                  labelStyle: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey,
+                  ),
+                  prefixIcon: Icon(
+                    Icons.lock_outline,
+                    color: Colors.grey,
+                  ),
+                  contentPadding: EdgeInsets.symmetric(vertical: 0),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+
+              /* Rol Pasajero o Conductor */
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                title: const Text('Pasajero',
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey)),
+                leading: Radio(
+                  value: 1,
+                  groupValue: rol,
+                  activeColor: primary,
+                  onChanged: (value) {
+                    setState(() {
+                      print(value);
+                      rol = value!;
+                    });
+                  },
+                ),
+              ),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                title: const Text('Conductor',
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey)),
+                leading: Radio(
+                  value: 2,
+                  groupValue: rol,
+                  activeColor: primary,
+                  onChanged: (value) {
+                    setState(() {
+                      print(value);
+                      rol = value!;
+                    });
+                  },
+                ),
+              ),
               /* const SizedBox(height: 16),
               Text(
                 'Selección actual: ${isSexo == true ? 'Hombre' : (isSexo == false ? 'Mujer' : 'Ninguno')}',
@@ -272,17 +314,6 @@ class _RegisterState extends State<Register> {
                     var image = urlCloudinary(selectedImage);
                     imagenController.text = image.toString();
                     register();
-                    /*  AuthController().register(
-                      nombreController.text,
-                      emailController.text,
-                      passwordController.text,
-                      registroController.text,
-                      celularController.text,
-                      image,
-                      carreraController.text,
-                      google,
-                      isSexo,
-                    ); */
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primary,
@@ -340,7 +371,7 @@ class _RegisterState extends State<Register> {
     final String nro_registro = registroController.text;
     final String celular = celularController.text;
 
-    var rol = await AuthController().getRoles();
+    /* var rol = await AuthController().getRoles(); */
 
     if (nombre.isEmpty ||
         correo.isEmpty ||
@@ -367,7 +398,12 @@ class _RegisterState extends State<Register> {
         }),
       );
       if (response.statusCode == 200) {
-        print('Registro exitoso');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Registro exitoso'),
+          ),
+        );
+
         Navigator.pushNamed(context, '/login');
       } else {
         print('Registro fallido');

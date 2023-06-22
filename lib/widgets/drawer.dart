@@ -3,21 +3,46 @@ import 'package:app_movil/controllers/perfilController.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class DrawerWidget extends StatelessWidget {
-  DrawerWidget(
-      {Key? key,
-      required this.nombrePerfil,
-      required this.nro_registroPerfil,
-      required this.pageNombre})
-      : super(key: key);
+class DrawerWidget extends StatefulWidget {
+  DrawerWidget({
+    Key? key,
+    required this.nombrePerfil,
+    required this.nro_registroPerfil,
+    required this.pageNombre,
+  }) : super(key: key);
+
   final String nombrePerfil;
   final String nro_registroPerfil;
   final String pageNombre;
 
   @override
+  _DrawerWidgetState createState() => _DrawerWidgetState();
+}
+
+class _DrawerWidgetState extends State<DrawerWidget> {
+  SharedPreferences? user;
+
+  @override
+  void initState() {
+    super.initState();
+    obtenerSharedPreferences();
+  }
+
+  Future<void> obtenerSharedPreferences() async {
+    user = await SharedPreferences.getInstance();
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
-    String nombre = nombrePerfil;
-    String nro_registro = nro_registroPerfil;
+    if (user == null) {
+      return CircularProgressIndicator();
+    }
+
+    String nombre = widget.nombrePerfil;
+    String nro_registro = widget.nro_registroPerfil;
+    int id_rol = user!.getInt('id_rol')!;
+
     return Drawer(
       child: Column(
         children: [
@@ -78,137 +103,149 @@ class DrawerWidget extends StatelessWidget {
               ),
             ),
           ),
+          /* if (id_rol == 2) */
           Expanded(
             child: ListView(
               children: [
-                ListTile(
-                  title: const Text("Reservar viaje"),
-                  selected: pageNombre == "Reservar viaje" ? true : false,
-                  horizontalTitleGap: 0.0,
-                  leading: const Icon(Icons.directions_car),
-                  selectedColor: primary,
-                  onTap: () {
-                    Navigator.pushReplacementNamed(
-                        context, '/reservarViajeLista');
-                  },
-                ),
-                ListTile(
-                  title: const Text("Solicitar viaje"),
-                  selected: pageNombre == "Solicitar viaje" ? true : false,
-                  leading: const Icon(Icons.directions_car),
-                  horizontalTitleGap: 0.0,
-                  selectedColor: primary,
-                  onTap: () {
-                    Navigator.pushReplacementNamed(context, '/solicitarViaje');
-                  },
-                ),
-                /* Metodo de pago */
-                ListTile(
-                  title: const Text("Método de pago"),
-                  subtitle: const Text("Efectivo"),
-                  selected: pageNombre == "Método de pago" ? true : false,
-                  leading: const Icon(Icons.payment),
-                  horizontalTitleGap: 0.0,
-                  selectedColor: primary,
-                  onTap: () {
-                    Navigator.pushReplacementNamed(context, '/metodoPago');
-                  },
-                ),
-                /* Preferencias */
-                ListTile(
-                  title: const Text("Preferencias"),
-                  selected: pageNombre == "Preferencias" ? true : false,
-                  leading: const Icon(Icons.settings),
-                  horizontalTitleGap: 0.0,
-                  selectedColor: primary,
-                  onTap: () {
-                    Navigator.pushReplacementNamed(context, '/preferencias');
-                  },
-                ),
-                ListTile(
-                  title: const Text("Historial de viajes"),
-                  selected: pageNombre == "Historial de viajes" ? true : false,
-                  leading: const Icon(Icons.history),
-                  horizontalTitleGap: 0.0,
-                  selectedColor: primary,
-                  onTap: () {
-                    Navigator.pushReplacementNamed(
-                        context, '/historialViajesPasajero');
-                  },
-                ),
-                /* Registrarse como conductor */
-                ListTile(
-                  title: const Text("Registar Vehiculo"),
-                  selected: pageNombre == "Registrar Conductor" ? true : false,
-                  leading: const Icon(Icons.person_add),
-                  horizontalTitleGap: 0.0,
-                  selectedColor: primary,
-                  onTap: () {
-                    Navigator.pushReplacementNamed(
-                        context, '/registerConductor');
-                  },
-                ),
-                /* Brevet */
-                ListTile(
-                  title: const Text("Brevet"),
-                  selected: pageNombre == "Brevet" ? true : false,
-                  leading: const Icon(Icons.person_add),
-                  horizontalTitleGap: 0.0,
-                  selectedColor: primary,
-                  onTap: () {
-                    Navigator.pushReplacementNamed(context, '/brevet');
-                  },
-                ),
-                /* Poner condicion para Conductor */
-                const SizedBox(
-                  height: 10,
-                  child: Divider(
-                    color: Colors.black,
+                if (id_rol == 1) ...[
+                  ListTile(
+                    title: const Text("Reservar viaje"),
+                    selected: widget.pageNombre == "Reservar viaje",
+                    horizontalTitleGap: 0.0,
+                    leading: const Icon(Icons.directions_car),
+                    selectedColor: primary,
+                    onTap: () {
+                      Navigator.pushReplacementNamed(
+                          context, '/reservarViajeLista');
+                    },
                   ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 20, top: 10, bottom: 10),
-                  child: Text(
-                    "Conductor",
-                    style: TextStyle(
+                  ListTile(
+                    title: const Text("Solicitar viaje"),
+                    selected: widget.pageNombre == "Solicitar viaje",
+                    leading: const Icon(Icons.directions_car),
+                    horizontalTitleGap: 0.0,
+                    selectedColor: primary,
+                    onTap: () {
+                      Navigator.pushReplacementNamed(
+                          context, '/solicitarViaje');
+                    },
+                  ),
+                  ListTile(
+                    title: const Text("Método de pago"),
+                    subtitle: const Text("Efectivo"),
+                    selected: widget.pageNombre == "Método de pago",
+                    leading: const Icon(Icons.payment),
+                    horizontalTitleGap: 0.0,
+                    selectedColor: primary,
+                    onTap: () {
+                      Navigator.pushReplacementNamed(context, '/metodoPago');
+                    },
+                  ),
+                  ListTile(
+                    title: const Text("Preferencias"),
+                    selected: widget.pageNombre == "Preferencias",
+                    leading: const Icon(Icons.settings),
+                    horizontalTitleGap: 0.0,
+                    selectedColor: primary,
+                    onTap: () {
+                      Navigator.pushReplacementNamed(context, '/preferencias');
+                    },
+                  ),
+                  /* Historial Pago */
+                  ListTile(
+                    title: const Text("Historial de pagos"),
+                    selected: widget.pageNombre == "Historial de pagos",
+                    leading: const Icon(Icons.history),
+                    horizontalTitleGap: 0.0,
+                    selectedColor: primary,
+                    onTap: () {
+                      Navigator.pushReplacementNamed(
+                          context, '/historialPagosPasajero');
+                    },
+                  ),
+                  ListTile(
+                    title: const Text("Historial de viajes"),
+                    selected: widget.pageNombre == "Historial de viajes",
+                    leading: const Icon(Icons.history),
+                    horizontalTitleGap: 0.0,
+                    selectedColor: primary,
+                    onTap: () {
+                      Navigator.pushReplacementNamed(
+                          context, '/historialViajesPasajero');
+                    },
+                  ),
+                ],
+                if (id_rol == 2) ...[
+                  const SizedBox(
+                    height: 10,
+                    child: Divider(
                       color: Colors.black,
-                      fontSize: 20,
                     ),
                   ),
-                ),
-                /* Inicio */
-                ListTile(
-                  title: const Text("Inicio"),
-                  selected: pageNombre == "Inicio" ? true : false,
-                  leading: const Icon(Icons.home),
-                  horizontalTitleGap: 0.0,
-                  selectedColor: primary,
-                  onTap: () {
-                    Navigator.pushReplacementNamed(context, '/inicioConductor');
-                  },
-                ),
-                /* Rutas */
-                ListTile(
-                  title: const Text("Rutas"),
-                  selected: pageNombre == "Rutas" ? true : false,
-                  leading: const Icon(Icons.map),
-                  horizontalTitleGap: 0.0,
-                  selectedColor: primary,
-                  onTap: () {
-                    Navigator.pushReplacementNamed(context, '/guardarRuta');
-                  },
-                ),
-                ListTile(
-                  title: const Text("Historial de viajes"),
-                  selected: pageNombre == "Historial de viajes" ? true : false,
-                  leading: const Icon(Icons.history),
-                  horizontalTitleGap: 0.0,
-                  selectedColor: primary,
-                  onTap: () {
-                    Navigator.pushReplacementNamed(
-                        context, '/historialViajesConductor');
-                  },
-                ),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 20, top: 10, bottom: 10),
+                    child: Text(
+                      "Conductor",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
+                  ListTile(
+                    title: const Text("Inicio"),
+                    selected: widget.pageNombre == "Inicio",
+                    leading: const Icon(Icons.home),
+                    horizontalTitleGap: 0.0,
+                    selectedColor: primary,
+                    onTap: () {
+                      Navigator.pushReplacementNamed(
+                          context, '/inicioConductor');
+                    },
+                  ),
+                  ListTile(
+                    title: const Text("Registrar Vehiculo"),
+                    selected: widget.pageNombre == "Registrar Conductor",
+                    leading: const Icon(Icons.person_add),
+                    horizontalTitleGap: 0.0,
+                    selectedColor: primary,
+                    onTap: () {
+                      Navigator.pushReplacementNamed(
+                          context, '/registerConductor');
+                    },
+                  ),
+                  ListTile(
+                    title: const Text("Brevet"),
+                    selected: widget.pageNombre == "Brevet",
+                    leading: const Icon(Icons.person_add),
+                    horizontalTitleGap: 0.0,
+                    selectedColor: primary,
+                    onTap: () {
+                      Navigator.pushReplacementNamed(context, '/brevet');
+                    },
+                  ),
+                  ListTile(
+                    title: const Text("Rutas"),
+                    selected: widget.pageNombre == "Rutas",
+                    leading: const Icon(Icons.map),
+                    horizontalTitleGap: 0.0,
+                    selectedColor: primary,
+                    onTap: () {
+                      Navigator.pushReplacementNamed(context, '/guardarRuta');
+                    },
+                  ),
+                  ListTile(
+                    title: const Text("Historial de viajes"),
+                    selected: widget.pageNombre == "Historial de viajes",
+                    leading: const Icon(Icons.history),
+                    horizontalTitleGap: 0.0,
+                    selectedColor: primary,
+                    onTap: () {
+                      Navigator.pushReplacementNamed(
+                          context, '/historialViajesConductor');
+                    },
+                  ),
+                ],
               ],
             ),
           ),

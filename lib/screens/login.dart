@@ -209,6 +209,7 @@ class _LoginState extends State<Login> {
           user.setString('nombre', jsonResponse['user']['nombre']);
           user.setString('nro_registro', jsonResponse['user']['nro_registro']);
           user.setInt('id', jsonResponse['user']['id']);
+          user.setInt('id_rol', jsonResponse['user']['id_rol']);
 
           print("Ingresado");
           Navigator.pushReplacementNamed(context, '/solicitarViaje');
