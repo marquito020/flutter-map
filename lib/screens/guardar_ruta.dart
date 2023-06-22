@@ -1303,8 +1303,19 @@ class _GuardarRutaPageState extends State<GuardarRutaPage> {
 
     if (response.statusCode == 200) {
       print("Ruta guardada");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Ruta guardada'),
+        ),
+      );
+      Navigator.pushNamed(context, "/guardarRuta");
     } else {
       print('Error');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Error'),
+        ),
+      );
     }
   }
 }

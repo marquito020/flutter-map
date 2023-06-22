@@ -9,6 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geocoder2/geocoder2.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -427,6 +428,8 @@ class _ReservarViajePageState extends State<ReservarViajePage> {
     String polylineString = widget.polylineCoordinates;
     List<LatLng> polylineCoordinates = [];
 
+    print("hola");
+
     final regex = RegExp(r"LatLng\((-?\d+\.\d+), (-?\d+\.\d+)\)");
     final matches = regex.allMatches(polylineString);
 
@@ -465,7 +468,7 @@ class _ReservarViajePageState extends State<ReservarViajePage> {
     SharedPreferences user = await SharedPreferences.getInstance();
     nombrePerfil = user.getString('nombre')!;
     nro_registro = user.getString('nro_registro')!;
-    id_usuario = user.getInt('id_usuario')!;
+    id_usuario = user.getInt('id')!;
   }
 
   @override
@@ -925,7 +928,7 @@ class _ReservarViajePageState extends State<ReservarViajePage> {
                           ),
                           onPressed: () {
                             /* _desplegableOrigenDestino(context); */
-                            reservarCarrera();
+                            reservarCarrera(context);
                           },
                         ),
                       ),
@@ -1103,7 +1106,119 @@ class _ReservarViajePageState extends State<ReservarViajePage> {
     );
   }
 
-  void reservarCarrera() async {
+  void pagarCarrera(id_soli_viaje, precio, context) async {
+    int costo = precio ~/ cantidadPasajeros;
+    var response = await http.post(Uri.parse('$apiBackend/pago'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, dynamic>{
+          "costo": costo,
+          "estado_pago": true,
+          "costo_total": precio,
+          "estado": true,
+          "id_soli_viaje": id_soli_viaje,
+        }));
+    if (response.statusCode == 200) {
+      /* AlertDialog Calificar y comentar */
+      print("Carrera pagada");
+      var calificacion = 0;
+      var comentario = "";
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Calificar y comentar'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text('Califique el viaje'),
+                const SizedBox(
+                  height: 10,
+                ),
+                RatingBar.builder(
+                  initialRating: 0,
+                  minRating: 1,
+                  direction: Axis.horizontal,
+                  allowHalfRating: true,
+                  itemCount: 5,
+                  itemSize: 30,
+                  itemPadding:
+                      const EdgeInsets.symmetric(horizontal: 4.0, vertical: 4),
+                  itemBuilder: (context, _) => const Icon(
+                    Icons.star,
+                    color: Colors.amber,
+                  ),
+                  onRatingUpdate: (rating) {
+                    calificacion = rating.toInt();
+                    print(rating);
+                  },
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                const Text('Comente el viaje'),
+                const SizedBox(
+                  height: 10,
+                ),
+                TextField(
+                  onChanged: (text) {
+                    comentario = text;
+                  },
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Comentario',
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, "/reservarViajeLista");
+                },
+                child: const Text('Cancelar'),
+              ),
+              TextButton(
+                onPressed: () async {
+                  var response =
+                      await http.post(Uri.parse('$apiBackend/califcom'),
+                          headers: <String, String>{
+                            'Content-Type': 'application/json; charset=UTF-8',
+                          },
+                          body: jsonEncode(<String, dynamic>{
+                            "comentario": comentario,
+                            "calificacion": calificacion,
+                            "id_usuario": id_usuario,
+                            "estado": true,
+                            "id_soliviaje": id_soli_viaje,
+                          }));
+                  if (response.statusCode == 200) {
+                    print("Comentario y calificacion agregados");
+                    /* Mensaje */
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Comentario y calificacion agregados'),
+                      ),
+                    );
+
+                    Navigator.pushNamed(context, "/reservarViajeLista");
+                  } else {
+                    print("Error al agregar comentario y calificacion");
+                  }
+                },
+                child: const Text('Aceptar'),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      print("Error al pagar la carrera");
+    }
+  }
+
+  void reservarCarrera(context) async {
     /* print("precio: " + ((precio / cantidadPasajeros).toInt()).toString());
     print("costo Total: " + precio.toString());
     print("id_soli_viaje: " + widget.id_soli_viaje.toString()); */
@@ -1118,24 +1233,114 @@ class _ReservarViajePageState extends State<ReservarViajePage> {
           "id_usuario": id_usuario,
           "id_ruta": widget.id_soli_viaje,
         }));
-
-    int costo = (precio / cantidadPasajeros).toInt();
-    int id_soli = widget.id_soli_viaje.toInt();
-    var response2 = await http.post(Uri.parse('$apiBackend/pago/'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, dynamic>{
-          "costo": costo,
-          "estado_pago": true,
-          "costo_total": costoTotal,
-          "estado": true,
-          "id_soli_viaje": 9,
-        }));
-
-    print(response2.body);
+    print(response.statusCode);
     if (response.statusCode == 200) {
-      /* Navigator.pushNamed(context, '/reservarViajeLista'); */
+      print(response.body);
+      var data = jsonDecode(response.body);
+      String id_soli_viaje = data['soliViaje']['id'].toString();
+      /*
+      print("id_soli_viaje: " + id_soli_viaje);
+      int costo = (precio / cantidadPasajeros).toInt();
+      int id_soli = widget.id_soli_viaje.toInt();
+      var response2 = await http.post(Uri.parse('$apiBackend/pago/'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(<String, dynamic>{
+            "costo": costo ~/ cantidadPasajeros,
+            "estado_pago": true,
+            "costo_total": costoTotal,
+            "estado": true,
+            "id_soli_viaje": id_soli_viaje,
+          }));
+      print(response2.body); */
+      /* if (response.statusCode == 200) { */
+      showDialog(
+        /* Pagar */
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Pagar'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text('¿Desea pagar ahora?'),
+                const SizedBox(
+                  height: 10,
+                ),
+                const Text('Costo total:'),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  precio.toString(),
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  /* Mensaje Viaje reservado */
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Viaje reservado'),
+                    ),
+                  );
+                  Navigator.pushNamed(context, "/reservarViajeLista");
+                },
+                child: const Text('Cancelar'),
+              ),
+              TextButton(
+                onPressed: () {
+                  pagarCarrera(id_soli_viaje, precio, context);
+                },
+                child: const Text('Aceptar'),
+              ),
+            ],
+          );
+        },
+        /* TextButton(
+            onPressed: () {
+              AlertDialog(
+                /* Pagar compartido o Pagar todo */
+                title: const Text('Pagar'),
+                content: const Text('¿Desea pagar ahora?'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      pagarCarrera(id_soli_viaje, precio, context);
+                    },
+                    child: const Text('Pagar todo'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      var costoCompartido = precio ~/ cantidadPasajeros;
+                      pagarCarrera(id_soli_viaje, costoCompartido, context);
+                    },
+                    child: const Text('Pagar compartido'),
+                  ),
+                ],
+              );
+            },
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () {},
+            child: const Text('Aceptar'),
+          ),
+        ], */
+      );
+      /* ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Viaje reservado'),
+          ),
+        );
+        Navigator.pushNamed(context, '/reservarViajeLista'); */
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -1143,6 +1348,13 @@ class _ReservarViajePageState extends State<ReservarViajePage> {
         ),
       );
     }
+    /* } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Error al reservar el viaje'),
+        ),
+      );
+    } */
   }
 
   Future _desplegableOrigenDestino(BuildContext context) {

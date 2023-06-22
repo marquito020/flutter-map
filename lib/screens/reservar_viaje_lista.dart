@@ -76,7 +76,7 @@ class _ReservarViajeListaPageState extends State<ReservarViajeListaPage> {
                           builder: (context) => ReservarViajePage(
                             polylineCoordinates: rutas[index]['strpolyline'],
                             id_soli_viaje: rutas[index]['id'],
-                            hora_p : rutas[index]['hora_p'],
+                            hora_p: rutas[index]['hora_p'],
                           ),
                         ),
                       );
@@ -107,6 +107,8 @@ class _ReservarViajeListaPageState extends State<ReservarViajeListaPage> {
         rutas = List<Map<String, dynamic>>.from(jsonResponse['ruta']);
         print(rutas);
       });
+    } else {
+      print('Request failed with status: ${response.statusCode}.');
     }
   }
 }
