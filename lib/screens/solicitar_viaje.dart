@@ -749,14 +749,15 @@ class _SolicitarViajePageState extends State<SolicitarViajePage> {
                               onPressed: () {
                                 /* hora actual */
                                 var now = DateTime.now();
-                                procesoViajeController().solicitarViaje(
+                                /* procesoViajeController().solicitarViaje(
                                   origenLatitude,
                                   origenLongitude,
                                   destinoLatitude,
                                   destinoLongitude,
                                   now,
                                   cantidadPasajeros,
-                                );
+                                ); */
+                                print("Solicitando viaje...");
                               },
                             ),
                           ),

@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../controllers/perfilController.dart';
+import '../utils/api_backend.dart';
 import '../widgets/drawer.dart';
+import 'package:http/http.dart' as http;
 
 class HistorialViajesPasajeroPage extends StatefulWidget {
   const HistorialViajesPasajeroPage({Key? key}) : super(key: key);
@@ -20,57 +22,43 @@ class _HistorialViajesPasajeroPageState
   List<Map<String, dynamic>> viajes = [];
   String nombrePerfil = "";
   String nro_registro = "";
+  int id_usuario = 0;
+  List<Map<String, dynamic>> historialSolicitudes = [];
 
   @override
   void initState() {
     super.initState();
     cargarViajes();
-    /* cargarDatosStore(); */
+    cargarDatosStore();
   }
 
-  void cargarDatosStore() async{
+  void cargarDatosStore() async {
     SharedPreferences user = await SharedPreferences.getInstance();
     nombrePerfil = user.getString('nombre')!;
     nro_registro = user.getString('nro_registro')!;
+    id_usuario = user.getInt('id')!;
+    print("id_usuario: $id_usuario");
   }
 
-  void cargarViajes() {
-    // Simular carga de datos desde un JSON
-    String jsonViajes = '''
-    [
-      {
-        "id": 1,
-        "conductor": "John Doe",
-        "destino": "Destino 1",
-        "horaSalida": "09:00 AM",
-        "horaLlegada": "10:00 AM",
-        "fecha": "2023-06-16",
-        "calificacion": 4.5
+  void cargarViajes() async {
+    var response = await http.get(
+      Uri.parse('$apiBackend/soliviaje'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
       },
-      {
-        "id": 2,
-        "conductor": "Jane Smith",
-        "destino": "Destino 2",
-        "horaSalida": "11:30 AM",
-        "horaLlegada": "12:30 PM",
-        "fecha": "2023-06-17",
-        "calificacion": 3.8
-      },
-      {
-        "id": 3,
-        "conductor": "Mike Johnson",
-        "destino": "Destino 3",
-        "horaSalida": "02:15 PM",
-        "horaLlegada": "03:15 PM",
-        "fecha": "2023-06-18",
-        "calificacion": 4.2
-      }
-    ]
-    ''';
+    );
 
-    // Decodificar el JSON y cargar los viajes
-    List<dynamic> listaViajes = jsonDecode(jsonViajes);
-    viajes = List<Map<String, dynamic>>.from(listaViajes);
+    if (response.statusCode == 200) {
+      var jsonResponse = jsonDecode(response.body);
+      setState(() {
+        historialSolicitudes =
+            List<Map<String, dynamic>>.from(jsonResponse['soliViaje']);
+        print(historialSolicitudes);
+      });
+      print(historialSolicitudes);
+    } else {
+      print('Error al obtener preferencias');
+    }
   }
 
   @override
@@ -94,39 +82,43 @@ class _HistorialViajesPasajeroPageState
       body: Container(
         padding: const EdgeInsets.only(top: 16),
         child: ListView.builder(
-          itemCount: viajes.length,
+          itemCount: historialSolicitudes.length,
           itemBuilder: (context, index) {
-            Map<String, dynamic> viaje = viajes[index];
-            return InkWell(
-              onTap: () {
-                // Acción al presionar el viaje en la lista
-                print("Viaje seleccionado: ${viaje['id']}");
-              },
-              child: ListTile(
-                leading: Icon(Icons.directions_car), // Agregar el icono aquí
-                title: Text(
-                  "Conductor: ${viaje['conductor']}",
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+            if (historialSolicitudes[index]['id_usuario'] == id_usuario) {
+              return InkWell(
+                onTap: () {
+                  // Acción al presionar el viaje en la lista
+                  print(
+                      "Viaje seleccionado: ${historialSolicitudes[index]['id']}");
+                },
+                child: ListTile(
+                  leading: Icon(Icons.directions_car), // Agregar el icono aquí
+                  title: Text(
+                    "Hora: ${historialSolicitudes[index]['hora_p']}",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Cantidad de personas: ${historialSolicitudes[index]['cant_pasajeros']}",
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                      /* const SizedBox(height: 8),
+                    Text(
+                      "Destino: ${historialSolicitudes[index]['estado']}",
+                      style: const TextStyle(fontSize: 14),
+                    ), */
+                    ],
                   ),
                 ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Destino: ${viaje['destino']}",
-                      style: const TextStyle(fontSize: 14),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      "Tiempo: ${viaje['horaSalida']} - ${viaje['horaLlegada']}",
-                      style: const TextStyle(fontSize: 14),
-                    ),
-                  ],
-                ),
-              ),
-            );
+              );
+            } else {
+              return Container();
+            }
           },
         ),
       ),

@@ -1,4 +1,5 @@
 import 'package:app_movil/screens/guardar_ruta.dart';
+import 'package:app_movil/screens/historial_pago_pasajero.dart';
 import 'package:app_movil/screens/historial_viajes_conductor.dart';
 import 'package:app_movil/screens/historial_viajes_pasajero.dart';
 import 'package:app_movil/screens/inicio_conductor.dart';
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
           '/guardarRuta': (BuildContext context) => const GuardarRutaPage(),
           '/reservarViajeLista': (BuildContext context) =>
               const ReservarViajeListaPage(),
+          '/historialPagosPasajero': (BuildContext context) => const HistorialPagosPage(),
         });
   }
 }
