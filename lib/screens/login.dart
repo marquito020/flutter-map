@@ -22,16 +22,6 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      /* appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            color: Colors.black,
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          )), */
       body: Stack(
         children: [
           const Padding(
@@ -39,12 +29,27 @@ class _LoginState extends State<Login> {
             child: SizedBox(
               width: double.infinity,
               child: Text(
-                'Bienvenido de nuevo',
+                'Hola Usuario,',
                 textAlign: TextAlign.left,
                 style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
                   color: primary,
+                ),
+              ),
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.only(top: 70, left: 25),
+            child: SizedBox(
+              width: double.infinity,
+              child: Text(
+                'Inicia sesión para continuar',
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey,
                 ),
               ),
             ),
