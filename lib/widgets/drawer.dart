@@ -44,6 +44,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     int id_rol = user!.getInt('id_rol')!;
 
     return Drawer(
+      backgroundColor: Color.fromARGB(255, 35, 37, 48),
       child: Column(
         children: [
           InkWell(
@@ -109,32 +110,48 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               children: [
                 if (id_rol == 1) ...[
                   ListTile(
-                    title: const Text("Reservar viaje"),
+                    title: const Text(
+                      "Reservar viaje",
+                      style: TextStyle(color: Colors.white),
+                    ),
                     selected: widget.pageNombre == "Reservar viaje",
                     horizontalTitleGap: 0.0,
-                    leading: const Icon(Icons.directions_car),
+                    leading: const Icon(
+                      Icons.directions_car,
+                      color: Colors.white,
+                    ),
                     selectedColor: primary,
                     onTap: () {
                       Navigator.pushReplacementNamed(
                           context, '/reservarViajeLista');
                     },
                   ),
-                  ListTile(
-                    title: const Text("Solicitar viaje"),
+                  /* ListTile(
+                    title: const Text("Solicitar viaje",
+                        style: TextStyle(color: Colors.white)),
                     selected: widget.pageNombre == "Solicitar viaje",
-                    leading: const Icon(Icons.directions_car),
+                    leading: const Icon(
+                      Icons.directions_car,
+                      color: Colors.white,
+                    ),
                     horizontalTitleGap: 0.0,
                     selectedColor: primary,
                     onTap: () {
                       Navigator.pushReplacementNamed(
                           context, '/solicitarViaje');
                     },
-                  ),
+                  ), */
                   ListTile(
-                    title: const Text("Método de pago"),
+                    title: const Text(
+                      "Tipo de pago",
+                      style: TextStyle(color: Colors.white),
+                    ),
                     subtitle: const Text("Efectivo"),
                     selected: widget.pageNombre == "Método de pago",
-                    leading: const Icon(Icons.payment),
+                    leading: const Icon(
+                      Icons.payment,
+                      color: Colors.white,
+                    ),
                     horizontalTitleGap: 0.0,
                     selectedColor: primary,
                     onTap: () {
@@ -142,9 +159,17 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     },
                   ),
                   ListTile(
-                    title: const Text("Preferencias"),
+                    title: const Text(
+                      "Preferencias",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
                     selected: widget.pageNombre == "Preferencias",
-                    leading: const Icon(Icons.settings),
+                    leading: const Icon(
+                      Icons.settings,
+                      color: Colors.white,
+                    ),
                     horizontalTitleGap: 0.0,
                     selectedColor: primary,
                     onTap: () {
@@ -153,9 +178,15 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   ),
                   /* Historial Pago */
                   ListTile(
-                    title: const Text("Historial de pagos"),
+                    title: const Text("Historial de pagos",
+                        style: TextStyle(
+                          color: Colors.white,
+                        )),
                     selected: widget.pageNombre == "Historial de pagos",
-                    leading: const Icon(Icons.history),
+                    leading: const Icon(
+                      Icons.history,
+                      color: Colors.white,
+                    ),
                     horizontalTitleGap: 0.0,
                     selectedColor: primary,
                     onTap: () {
@@ -164,9 +195,15 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     },
                   ),
                   ListTile(
-                    title: const Text("Historial de viajes"),
+                    title: const Text(
+                      "Reporte de viajes",
+                      style: TextStyle(color: Colors.white),
+                    ),
                     selected: widget.pageNombre == "Historial de viajes",
-                    leading: const Icon(Icons.history),
+                    leading: const Icon(
+                      Icons.history,
+                      color: Colors.white,
+                    ),
                     horizontalTitleGap: 0.0,
                     selectedColor: primary,
                     onTap: () {
@@ -187,15 +224,18 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     child: Text(
                       "Conductor",
                       style: TextStyle(
-                        color: Colors.black,
+                        color: Colors.white,
                         fontSize: 20,
                       ),
                     ),
                   ),
                   ListTile(
-                    title: const Text("Inicio"),
+                    title: const Text("Inicio",
+                        style: TextStyle(
+                          color: Colors.white,
+                        )),
                     selected: widget.pageNombre == "Inicio",
-                    leading: const Icon(Icons.home),
+                    leading: const Icon(Icons.home, color: Colors.white),
                     horizontalTitleGap: 0.0,
                     selectedColor: primary,
                     onTap: () {
@@ -204,9 +244,12 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     },
                   ),
                   ListTile(
-                    title: const Text("Registrar Vehiculo"),
+                    title: const Text("Registrar Vehiculo",
+                        style: TextStyle(
+                          color: Colors.white,
+                        )),
                     selected: widget.pageNombre == "Registrar Conductor",
-                    leading: const Icon(Icons.person_add),
+                    leading: const Icon(Icons.person_add, color: Colors.white),
                     horizontalTitleGap: 0.0,
                     selectedColor: primary,
                     onTap: () {
@@ -215,9 +258,12 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     },
                   ),
                   ListTile(
-                    title: const Text("Brevet"),
+                    title: const Text("Registro de Brevet",
+                        style: TextStyle(
+                          color: Colors.white,
+                        )),
                     selected: widget.pageNombre == "Brevet",
-                    leading: const Icon(Icons.person_add),
+                    leading: const Icon(Icons.person_add, color: Colors.white),
                     horizontalTitleGap: 0.0,
                     selectedColor: primary,
                     onTap: () {
@@ -225,9 +271,12 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     },
                   ),
                   ListTile(
-                    title: const Text("Rutas"),
+                    title: const Text("Rutas",
+                        style: TextStyle(
+                          color: Colors.white,
+                        )),
                     selected: widget.pageNombre == "Rutas",
-                    leading: const Icon(Icons.map),
+                    leading: const Icon(Icons.map, color: Colors.white),
                     horizontalTitleGap: 0.0,
                     selectedColor: primary,
                     onTap: () {
@@ -235,9 +284,12 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     },
                   ),
                   ListTile(
-                    title: const Text("Historial de viajes"),
+                    title: const Text("Historial de viajes",
+                        style: TextStyle(
+                          color: Colors.white,
+                        )),
                     selected: widget.pageNombre == "Historial de viajes",
-                    leading: const Icon(Icons.history),
+                    leading: const Icon(Icons.history, color: Colors.white),
                     horizontalTitleGap: 0.0,
                     selectedColor: primary,
                     onTap: () {
@@ -251,8 +303,11 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           ),
           const Divider(),
           ListTile(
-            title: const Text("Cerrar sesión"),
-            leading: const Icon(Icons.logout),
+            title: const Text("Cerrar sesión",
+                style: TextStyle(
+                  color: Colors.white,
+                )),
+            leading: const Icon(Icons.logout, color: Colors.white),
             horizontalTitleGap: 0.0,
             onTap: () async {
               SharedPreferences user = await SharedPreferences.getInstance();

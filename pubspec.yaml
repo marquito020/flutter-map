@@ -77,7 +77,6 @@ flutter:
   assets:
     - assets/icons/mark_end.png
     - assets/icons/mark_start.png
-    - assets/icons/pin.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

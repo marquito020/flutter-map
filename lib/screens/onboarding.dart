@@ -14,13 +14,13 @@ class Onboarding extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Padding(
-                padding: const EdgeInsets.only(bottom: 30, left: 25),
+                padding: const EdgeInsets.only(bottom: 350, left: 25),
                 child: Column(
                   children: const [
                     SizedBox(
                       width: double.infinity,
                       child: Text(
-                        'Bienvenido a',
+                        'Viaje Fast Estudiantil',
                         textAlign: TextAlign.left,
                         style: TextStyle(
                           fontSize: 30,
@@ -32,7 +32,7 @@ class Onboarding extends StatelessWidget {
                     SizedBox(
                       width: double.infinity,
                       child: Text(
-                        'Universidad Taxi',
+                        'U.A.G.R.M.',
                         textAlign: TextAlign.left,
                         style: TextStyle(
                           fontSize: 30,
